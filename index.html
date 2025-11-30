@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Calendrier Stranger Things </title>
+    <link rel="icon" type="image/png" href="images/icon.jpg" sizes="32x32" />
+    <link rel="icon" type="image/png" href="images/icon.jpg" sizes="16x16" />
+    <link rel="stylesheet" href="style/style.css"> 
+  </head>
+
+  <body>
+    <img class="logo" src="images/logo.png" alt="logo" />
+
+    <div class="calendar" id="calendar">
+        <div class="door">
+          <span>1</span>
+          <div class="content"> 
+            <img class="imgdoor" src="images/door1.png" alt="door1"/>
+          </div>
+        </div>
+
+        <div class="door">
+          <span>2</span>
+          <div class="content"> 
+            Surprise 2
+          </div>
+        </div>
+
+        <div class="door">
+          <span>3</span>
+          <div class="content"> 
+            Surprise 3
+          </div>
+        </div>
+
+        <div class="door">
+          <span>4</span>
+          <div class="content"> 
+            Surprise 4
+          </div>
+        </div>
+
+        <div class="door">
+          <span>5</span>
+          <div class="content"> 
+            Surprise 5 
+          </div>
+        </div>
+
+        <div class="door">
+          <span>6</span>
+          <div class="content">
+             Surprise 6 
+            </div>
+          </div>
+
+        <div class="door">
+          <span>7</span>
+          <div class="content">
+             Surprise 7 
+            </div>
+          </div>
+
+        <div class="door">
+          <span>8</span>
+          <div class="content"> 
+            Surprise 8 
+          </div>
+        </div>
+
+        <div class="door">
+          <span>9</span>
+          <div class="content"> 
+            Surprise 9 
+          </div>
+        </div>
+
+        <div class="door">
+          <span>10</span>
+          <div class="content">
+            Surprise 10
+          </div>
+        </div>
+
+        <div class="door">
+          <span>11</span>
+          <div class="content"> 
+            Surprise 11
+          </div>
+        </div>
+
+        <div class="door">
+          <span>12</span>
+          <div class="content"> 
+            Surprise 12 
+          </div>
+        </div>
+
+        <div class="door">
+          <span>13</span>
+          <div class="content"> 
+            Surprise 13 
+          </div>
+        </div>
+
+        <div class="door">
+          <span>14</span>
+          <div class="content"> 
+            Surprise 14 
+          </div>
+        </div>
+
+        <div class="door">
+          <span>15</span>
+          <div class="content"> 
+            Surprise 15 
+          </div>
+        </div>
+
+        <div class="door">
+          <span>16</span>
+          <div class="content"> 
+            Surprise 16 
+          </div>
+        </div>
+
+        <div class="door">
+          <span>17</span>
+          <div class="content"> 
+            Surprise 17 
+          </div>
+        </div>
+
+        <div class="door">
+          <span>18</span>
+          <div class="content"> 
+            Surprise 18 
+          </div>
+        </div>
+
+        <div class="door">
+          <span>19</span>
+          <div class="content"> 
+            Surprise 19 
+          </div>
+        </div>
+
+        <div class="door">
+          <span>20</span>
+          <div class="content"> 
+            Surprise 20 
+          </div>
+        </div>
+
+        <div class="door">
+          <span>21</span>
+          <div class="content"> 
+            Surprise 21 
+          </div>
+        </div>
+
+        <div class="door">
+          <span>22</span>
+          <div class="content">
+            Surprise 22 
+          </div>
+        </div>
+
+        <div class="door">
+          <span>23</span>
+          <div class="content"> 
+            Surprise 23 
+          </div>
+        </div>
+
+        <div class="door">
+          <span>24</span>
+          <div class="content"> 
+            Surprise 24 
+          </div>
+        </div>
+    </div>
+
+    <script> 
+      const doors = document.querySelectorAll('.door');
+      doors.forEach(door => {
+          door.addEventListener('click', () => door.classList.toggle('open'));
+      });
+
+      // Paramètres
+      const calendar = document.getElementById('calendar');
+      const columns = 6;
+      const rows = 4;
+      const doorSize = 100;
+      const gap = 25;
+      const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00'];
+
+      // Canvas pour le fil noir
+      const canvas = document.createElement('canvas');
+      canvas.width = calendar.clientWidth;
+      canvas.height = calendar.clientHeight;
+      canvas.style.position = 'absolute';
+      canvas.style.top = '0';
+      canvas.style.left = '0';
+      canvas.style.zIndex = '-1';
+      calendar.appendChild(canvas);
+      const ctx = canvas.getContext('2d');
+      ctx.strokeStyle = '#000';
+      ctx.lineWidth = 2;
+
+      // Guirlande et positions
+      const garland = document.createElement('div');
+      garland.classList.add('garland');
+      const lightPositions = [];
+      const totalLights = columns * rows * 2;
+
+      for(let i = 0; i < totalLights; i++){
+          const light = document.createElement('div');
+          light.classList.add('light');
+          light.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+
+          const row = Math.floor(i / (columns*2));
+          const col = i % (columns*2);
+          let x = col * (doorSize/2 + gap/2);
+          let y = row * (doorSize + gap) + Math.sin(col/2) * 15;
+
+          if(row % 2 === 1) x = calendar.clientWidth - x - 12;
+
+          light.style.left = `${x}px`;
+          light.style.top = `${y}px`;
+
+          garland.appendChild(light);
+          lightPositions.push({x: x + 6, y: y + 6}); // centre
+      }
+
+      calendar.appendChild(garland);
+
+      // Dessiner le fil avec des arcs sous les ampoules
+      ctx.beginPath();
+      ctx.moveTo(lightPositions[0].x, lightPositions[0].y);
+      for(let i = 1; i < lightPositions.length; i++){
+          const prev = lightPositions[i-1];
+          const curr = lightPositions[i];
+          const cpX = (prev.x + curr.x)/2;
+          const cpY = Math.max(prev.y, curr.y) + 10; // arc vers le bas
+          ctx.quadraticCurveTo(cpX, cpY, curr.x, curr.y);
+      }
+      ctx.stroke();
+    </script>
+</body>
+</html>
