@@ -124,6 +124,60 @@
         100% { opacity: 0.2; transform: translateY(0px); }
     }
 
+  /* Style pour la case 13 avec l'effet glitch */
+.case.upside {
+      color: rgba(255, 255, 255, 0.516);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+    }
+
+    .glitch {
+      position: relative;
+      font-size: 14px;
+      text-align: center;
+      animation: shake 0.15s infinite;
+    }
+
+    .glitch::before,
+    .glitch::after {
+      content: attr(data-text);
+      position: absolute;
+      left: 0;
+      width: 100%;
+      opacity: 0.8;
+    }
+
+    .glitch::before {
+      color: rgba(236, 22, 22, 0.557);
+      animation: glitchTop 1.6s infinite linear;
+    }
+
+    .glitch::after {
+      color:rgba(2, 14, 144, 0.557);
+      animation: glitchBottom 1.2s infinite linear;
+    }
+
+    @keyframes glitchTop {
+      0% { clip-path: inset(0 0 80% 0); transform: translate(-2px, -2px); }
+      50% { clip-path: inset(10% 0 40% 0); transform: translate(2px, 0); }
+      100% { clip-path: inset(0 0 80% 0); }
+    }
+
+    @keyframes glitchBottom {
+      0% { clip-path: inset(60% 0 0 0); transform: translate(2px, 2px); }
+      50% { clip-path: inset(40% 0 20% 0); transform: translate(-2px, 0); }
+      100% { clip-path: inset(60% 0 0 0); }
+    }
+
+    @keyframes shake {
+      0% { transform: translate(0); }
+      25% { transform: translate(-1px, 1px); }
+      50% { transform: translate(1px, -1px); }
+      75% { transform: translate(-1px, -1px); }
+      100% { transform: translate(0); }
+    }
 </style>
 
   <body>
@@ -217,7 +271,11 @@
         <div class="door">
           <span>13</span>
           <div class="content"> 
-            Surprise 13 
+             <div class="case upside">
+               <div class="glitch" data-text="Oh oh ! C'est le 13">
+                Oh oh ! C'est le 13
+               </div>
+             </div>
           </div>
         </div>
 
@@ -367,6 +425,7 @@
     </script>
 </body>
 </html>
+
 
 
 
