@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Les lumières de Hawkins</title>
+
+<style>
+/* =======================
+   FOND STRANGER THINGS ICONIQUE
+   ======================= */
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    linear-gradient(#1a1a1a, #0d0d0d); 
+  font-family: Arial, sans-serif;
+  color: white;
+  text-align: center;
+}
+
+/* Mur */
+.wall {
+  position: fixed;
+  inset: 0;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(225, 58, 58, 0.852),
+      rgba(255,255,255,0.03) 2px,
+      transparent 10px,
+      transparent 6px
+    );
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* =======================
+   JEU
+   ======================= */
+
+h3 {
+  margin-top: 70px;
+  position: relative;
+  z-index: 2;
+}
+
+.game {
+  position: relative;
+  z-index: 2;
+  width: 90vw;
+  max-width: 360px;
+  margin: 20px auto;
+  padding: 18px;
+  background: #111;
+  border-radius: 12px;
+  box-shadow: 0 0 25px rgba(0,0,0,0.8);
+}
+
+.scene {
+  display: flex;
+  justify-content: space-between;
+  font-size: 2rem;
+  margin-bottom: 8px;
+}
+
+.level {
+  font-size: 0.85rem;
+  margin-bottom: 10px;
+  color: #ffd166; 
+}
+
+.lights {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin: 22px 0;
+}
+
+.light {
+  width: 75px;
+  height: 75px;
+  margin: auto;
+  border-radius: 50%;
+  background: #222;
+  box-shadow: inset 0 0 14px #000;
+  cursor: pointer;
+  transition: 0.15s;
+}
+
+.light.on {
+  background: #ffd166;
+  box-shadow: 0 0 25px #ffd166;
+}
+
+.light.error {
+  background: #d62828;
+  box-shadow: 0 0 25px #d62828;
+}
+
+.status {
+  font-size: 0.9rem;
+  min-height: 1.4em;
+}
+</style>
+</head>
+
+<body>
+
+<div class="wall"></div>
+
+<!-- Guirlande Stranger Things -->
+<div class="garland" id="garland">
+  <div class="bulb red"></div>
+  <div class="bulb yellow"></div>
+  <div class="bulb blue"></div>
+  <div class="bulb green"></div>
+  <div class="bulb red"></div>
+  <div class="bulb yellow"></div>
+  <div class="bulb blue"></div>
+</div>
+
+<h3>💡 Les lumières de Hawkins</h3>
+
+<div class="game" id="game">
+  <div class="scene">
+    <span>🦦</span>
+    <span>🐢</span>
+  </div>
+
+  <div class="level" id="level">Signal 1</div>
+
+  <div class="lights">
+    <div class="light" data-id="0"></div>
+    <div class="light" data-id="1"></div>
+    <div class="light" data-id="2"></div>
+    <div class="light" data-id="3"></div>
+    <div class="light" data-id="4"></div>
+    <div class="light" data-id="5"></div>
+  </div>
+
+  <div class="status" id="status">
+    Observe le signal lumineux…
+  </div>
+</div>
+
+<script>
+const lights = document.querySelectorAll(".light");
+const bulbs = document.querySelectorAll(".bulb");
+const status = document.getElementById("status");
+const levelText = document.getElementById("level");
+
+let sequence = [];
+let playerIndex = 0;
+let level = 1;
+let locked = true;
+let speed = 650;
+
+function randomLight() {
+  return Math.floor(Math.random() * lights.length);
+}
+
+function addToSequence() {
+  sequence.push(randomLight());
+}
+
+function playSequence() {
+  locked = true;
+  status.textContent = "Signal en cours…";
+  playerIndex = 0;
+
+  let i = 0;
+  const interval = setInterval(() => {
+    lights.forEach(l => l.classList.remove("on"));
+    bulbs.forEach(b => b.classList.remove("on"));
+
+    if (i >= sequence.length) {
+      clearInterval(interval);
+      locked = false;
+      status.textContent = "À toi de jouer";
+      return;
+    }
+
+    const id = sequence[i];
+    lights[id].classList.add("on");
+    bulbs[id % bulbs.length].classList.add("on");
+
+    setTimeout(() => {
+      lights[id].classList.remove("on");
+      bulbs[id % bulbs.length].classList.remove("on");
+    }, speed * 0.6);
+
+    i++;
+  }, speed);
+}
+
+lights.forEach(light => {
+  light.addEventListener("click", () => {
+    if (locked) return;
+
+    const id = Number(light.dataset.id);
+    light.classList.add("on");
+    setTimeout(() => light.classList.remove("on"), 200);
+
+    if (id === sequence[playerIndex]) {
+      playerIndex++;
+      if (playerIndex === sequence.length) {
+        level++;
+        if (level > 6) {
+          status.textContent =
+            "❤️ Même dans le noir, je te retrouve toujours.";
+          lights.forEach(l => l.classList.add("on"));
+        } else {
+          levelText.textContent = "Signal " + level;
+          speed = Math.max(400, speed - 50);
+          setTimeout(() => {
+            addToSequence();
+            playSequence();
+          }, 800);
+        }
+      }
+    } else {
+      status.textContent = "💀 Mauvais signal… recommence";
+      sequence = [];
+      level = 1;
+      speed = 650;
+      levelText.textContent = "Signal 1";
+      setTimeout(() => {
+        addToSequence();
+        playSequence();
+      }, 1000);
+    }
+  });
+});
+
+addToSequence();
+playSequence();
+</script>
+
+</body>
+</html>
